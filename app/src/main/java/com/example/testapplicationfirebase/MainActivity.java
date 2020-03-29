@@ -18,11 +18,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class MainActivity extends AppCompatActivity {
 
     EditText txtID, txtName, txtAddress, txtContact;
     Button btnSave, btnShow, btnUpdate, btnDelete;
-    DatabaseReference databaseReference, readDatabaseReference, updateDatabaseReference;
+    private static AtomicInteger ID_GENERATOR = new AtomicInteger(1000);
+    DatabaseReference databaseReference, readDatabaseReference, updateDatabaseReference, deleteDatabaseReference;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
     Student student;
@@ -70,7 +73,11 @@ public class MainActivity extends AppCompatActivity {
                         student.setContact(Integer.parseInt(txtContact.getText().toString().trim()));
 
 //                        databaseReference.push().setValue(student);
-                        databaseReference.child("St1").setValue(student);
+
+//                        AUTO GENERATE ID
+                        int studentID = ID_GENERATOR.getAndIncrement();
+
+                        databaseReference.child(String.valueOf(studentID)).setValue(student);
 
 
                         Toast.makeText(getApplicationContext(), "Data Successfully Saved", Toast.LENGTH_SHORT).show();
@@ -136,6 +143,32 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(getApplicationContext(), "No Source to Update", Toast.LENGTH_SHORT).show();
                         }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Student");
+                deleteDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.hasChild("St1")) {
+                            deleteDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Student").child("St1");
+                            deleteDatabaseReference.removeValue();
+                            clearControl();
+
+                            Toast.makeText(getApplicationContext(), "Data Successfully Deleted", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "No Source to Delete ", Toast.LENGTH_SHORT).show();
+                        } 
                     }
 
                     @Override
