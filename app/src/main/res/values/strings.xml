@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">TestApplicationFirebase</string>
+    <string name="sid">Enter Student ID</string>
+    <string name="sName">Enter Student Name</string>
+    <string name="sAddress">Enter Student Address</string>
+    <string name="sPhone">Enter Student Phone</string>
+    <string name="saveBtn">save</string>
+    <string name="showBtn">show</string>
+    <string name="updateBtn">Update</string>
+    <string name="deleteBtn">Delete</string>
 </resources>
